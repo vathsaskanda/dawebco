@@ -15,13 +15,15 @@ import { AuroraBackground } from "@/components/ui/aurora-background";
 import { ShaderBackground } from "@/components/ui/shader-background";
 import { useTheme } from "@/components/theme-toggle";
 import ToggleSwitch from "@/components/ui/toggle-switch";
-import { motion, useScroll, useMotionValueEvent, AnimatePresence } from "framer-motion";
-import { useState, useRef, useEffect } from "react";
+import { motion, useScroll, useMotionValueEvent } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
+import { useState, useRef } from "react";
 import { ChatDialog } from "@/components/chat-dialog";
 import { AiChatbotSection } from "@/components/blocks/ai-chatbot-section";
 import { PricingSection } from "@/components/blocks/pricing-section";
 import { ContactSection } from "@/components/blocks/contact-section";
 import { Footer } from "@/components/blocks/footer";
+import processGradient from "@/assets/process-gradient.png.asset.json";
 import {
   DentalPreview,
   CafePreview,
@@ -55,12 +57,42 @@ export const Route = createFileRoute("/")({
 });
 
 const TIMELINE = [
-  { icon: Search, title: "Discover", kicker: "Phase 01", desc: "Understand your business, audience, and competitive edge." },
-  { icon: ClipboardList, title: "Plan", kicker: "Phase 02", desc: "Map structure, flow, and a roadmap for strategic execution." },
-  { icon: Palette, title: "Design", kicker: "Phase 03", desc: "Craft pixel-perfect interfaces that express your brand beautifully." },
-  { icon: Code2, title: "Develop", kicker: "Phase 04", desc: "Build fast, secure, accessible code with continuous quality checks." },
-  { icon: Rocket, title: "Launch", kicker: "Phase 05", desc: "Stress-test, tune performance, and deploy with maximum impact." },
-  { icon: LifeBuoy, title: "Support", kicker: "Phase 06", desc: "Monitor, iterate, and evolve the product as your business grows." },
+  {
+    icon: Search,
+    title: "Discover",
+    kicker: "Phase 01",
+    desc: "Understand your business, audience, and competitive edge.",
+  },
+  {
+    icon: ClipboardList,
+    title: "Plan",
+    kicker: "Phase 02",
+    desc: "Map structure, flow, and a roadmap for strategic execution.",
+  },
+  {
+    icon: Palette,
+    title: "Design",
+    kicker: "Phase 03",
+    desc: "Craft pixel-perfect interfaces that express your brand beautifully.",
+  },
+  {
+    icon: Code2,
+    title: "Develop",
+    kicker: "Phase 04",
+    desc: "Build fast, secure, accessible code with continuous quality checks.",
+  },
+  {
+    icon: Rocket,
+    title: "Launch",
+    kicker: "Phase 05",
+    desc: "Stress-test, tune performance, and deploy with maximum impact.",
+  },
+  {
+    icon: LifeBuoy,
+    title: "Support",
+    kicker: "Phase 06",
+    desc: "Monitor, iterate, and evolve the product as your business grows.",
+  },
 ];
 
 function Index() {
@@ -71,18 +103,14 @@ function ProcessSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const { theme } = useTheme();
   const isDark = theme === "dark";
-  
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start 30%", "end 70%"],
   });
-  
   const [activeIdx, setActiveIdx] = useState(0);
-
-  // Optimized Scroll Tracking: Avoids triggering state resets if index matches
   useMotionValueEvent(scrollYProgress, "change", (v) => {
     const next = Math.min(TIMELINE.length - 1, Math.max(0, Math.floor(v * TIMELINE.length)));
-    setActiveIdx((prev) => (prev !== next ? next : prev));
+    if (next !== activeIdx) setActiveIdx(next);
   });
 
   const accent = isDark ? "#3B5998" : "#D97757";
@@ -113,7 +141,7 @@ function ProcessSection() {
   return (
     <section
       ref={sectionRef}
-      className={`relative py-16 md:py-24 lg:py-32 border-y-8 will-change-transform ${isDark ? "text-slate-200" : "text-[#3B2A1A]"}`}
+      className={`relative py-16 md:py-24 lg:py-32 border-y-8 ${isDark ? "text-slate-200" : "text-[#3B2A1A]"}`}
       style={{
         background: bgGradient,
         borderTopColor: borderCol,
@@ -146,7 +174,7 @@ function ProcessSection() {
               return (
                 <div
                   key={step.title}
-                  className={`flex items-center gap-3 md:gap-6 transition-all duration-300 ${
+                  className={`flex items-center gap-3 md:gap-6 transition-all duration-500 ${
                     isActive ? `${navActive} opacity-100 translate-x-1` : `${navInactive} opacity-40`
                   }`}
                 >
@@ -159,7 +187,7 @@ function ProcessSection() {
                   <span className="text-sm uppercase tracking-widest">{step.title}</span>
                   <span
                     aria-hidden
-                    className="h-px flex-grow transition-all duration-300"
+                    className="h-px flex-grow transition-all duration-500"
                     style={{ background: isActive ? accent : navRule }}
                   />
                 </div>
@@ -176,15 +204,15 @@ function ProcessSection() {
             return (
               <motion.article
                 key={step.title}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-                className="relative group will-change-transform"
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                className="relative group"
               >
                 <div
                   aria-hidden
-                  className="absolute -left-4 md:-left-10 top-0 text-[4.5rem] md:text-[10rem] font-bold leading-none select-none pointer-events-none transition-colors duration-500"
+                  className="absolute -left-4 md:-left-10 top-0 text-[4.5rem] md:text-[10rem] font-bold leading-none select-none pointer-events-none transition-colors duration-700"
                   style={{
                     color: isActive ? `rgba(${accentRgb},0.14)` : bigNumInactive,
                   }}
@@ -192,7 +220,7 @@ function ProcessSection() {
                   {String(i + 1).padStart(2, "0")}
                 </div>
                 <div
-                  className="relative border rounded-2xl p-4 md:p-8 overflow-hidden backdrop-blur-sm transition-all duration-300"
+                  className="relative border rounded-2xl p-4 md:p-8 overflow-hidden backdrop-blur-sm transition-all duration-500"
                   style={{
                     background: cardBg,
                     borderColor: isActive ? cardBorderActive : cardBorder,
@@ -201,7 +229,7 @@ function ProcessSection() {
                 >
                   <div
                     aria-hidden
-                    className="absolute top-0 right-0 w-40 h-40 transition-opacity duration-500"
+                    className="absolute top-0 right-0 w-40 h-40 transition-opacity duration-700"
                     style={{
                       background: `linear-gradient(to bottom left, rgba(${accentRgb},0.2), transparent)`,
                       opacity: isActive ? 1 : 0.4,
@@ -217,7 +245,7 @@ function ProcessSection() {
                       </h3>
                     </div>
                     <div
-                      className="shrink-0 w-8 h-8 md:w-10 md:h-10 rounded-xl border flex items-center justify-center transition-colors duration-300"
+                      className="shrink-0 w-8 h-8 md:w-10 md:h-10 rounded-xl border flex items-center justify-center transition-colors duration-500"
                       style={{
                         background: isActive ? accent : iconInactiveBg,
                         borderColor: isActive ? accent : iconInactiveBorder,
@@ -244,26 +272,8 @@ function IndexInner() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
   const HeroBg = isDark ? ShaderBackground : AuroraBackground;
-  
   const [chatOpen, setChatOpen] = useState(false);
   const [preview, setPreview] = useState<null | "dental" | "cafe" | "gym" | "fashion">(null);
-  
-  // Performance Optimization: Section visibility viewport state tracking
-  const [renderHeroMascot, setRenderHeroMascot] = useState(false);
-  const heroRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setRenderHeroMascot(entry.isIntersecting);
-      },
-      { threshold: 0.01 }
-    );
-    if (heroRef.current) {
-      observer.observe(heroRef.current);
-    }
-    return () => observer.disconnect();
-  }, []);
 
   const handleScrollTo = (id: string) => (e: React.MouseEvent) => {
     e.preventDefault();
@@ -315,69 +325,62 @@ function IndexInner() {
         </div>
       </nav>
 
-      <div ref={heroRef} className="w-full">
-        <HeroBg className={isDark ? "h-[calc(100dvh-56px)] overflow-hidden md:h-[calc(100dvh-56px)] md:overflow-visible" : "h-[calc(100dvh-56px)] overflow-hidden sm:h-auto sm:min-h-[calc(100vh-64px)] sm:overflow-visible"}>
-          <section
-            className={`relative w-full flex flex-col items-center ${
-              isDark
-                ? "h-full justify-start pt-20 pb-28 md:justify-center md:pt-0 md:pb-0"
-                : "h-full justify-start pt-20 pb-28 sm:h-auto sm:min-h-[calc(100vh-64px)] sm:justify-center sm:py-28 md:py-32"
-            }`}
-          >
-            {/* Optimized performance: Completely drops out heavy Canvas 3D models when out of viewport range */}
-            {renderHeroMascot && (
-              <>
-                {isDark ? (
-                  <div className="absolute inset-x-0 bottom-0 md:inset-x-auto md:right-0 md:w-1/2 h-[clamp(340px,56vh,520px)] md:h-[65vh] z-0 flex justify-end overflow-visible pointer-events-none">
-                    <InteractiveRobotSpline className="w-full h-full max-w-[280px] md:max-w-none scale-[clamp(0.40,0.46,0.55)] md:scale-100 origin-bottom pointer-events-auto" />
-                  </div>
-                ) : (
-                  <div className="absolute bottom-14 right-3 sm:bottom-6 sm:right-6 md:bottom-8 md:right-8 w-[120px] h-[110px] sm:w-[220px] sm:h-[198px] md:w-[286px] md:h-[253px] lg:w-[352px] lg:h-[308px] z-0 pointer-events-auto">
-                    <BunnyModel className="w-full h-full cursor-grab active:cursor-grabbing" />
-                  </div>
-                )}
-              </>
-            )}
-
-            <button
+      <HeroBg className={isDark ? "h-[calc(100dvh-56px)] overflow-hidden md:h-[calc(100dvh-56px)] md:overflow-visible" : "h-[calc(100dvh-56px)] overflow-hidden sm:h-auto sm:min-h-[calc(100vh-64px)] sm:overflow-visible"}>
+        <section
+          className={`relative w-full flex flex-col items-center ${
+            isDark
+              ? "h-full justify-start pt-20 pb-28 md:justify-center md:pt-0 md:pb-0"
+              : "h-full justify-start pt-20 pb-28 sm:h-auto sm:min-h-[calc(100vh-64px)] sm:justify-center sm:py-28 md:py-32"
+          }`}
+        >
+          {/* 3D mascot */}
+          {isDark ? (
+            <div className="absolute inset-x-0 bottom-0 md:inset-x-auto md:right-0 md:w-1/2 h-[clamp(340px,56vh,520px)] md:h-[65vh] z-0 flex justify-end overflow-visible pointer-events-none">
+              <InteractiveRobotSpline className="w-full h-full max-w-[280px] md:max-w-none scale-[clamp(0.40,0.46,0.55)] md:scale-100 origin-bottom pointer-events-auto" />
+            </div>
+          ) : (
+            <div className="absolute bottom-14 right-3 sm:bottom-6 sm:right-6 md:bottom-8 md:right-8 w-[120px] h-[110px] sm:w-[220px] sm:h-[198px] md:w-[286px] md:h-[253px] lg:w-[352px] lg:h-[308px] z-0 pointer-events-auto">
+              <BunnyModel className="w-full h-full cursor-grab active:cursor-grabbing" />
+            </div>
+          )}
+          <button
               type="button"
               onClick={() => setChatOpen(true)}
               aria-label="Open chat assistant"
-              className="absolute bottom-2 right-3 dark:bottom-0 dark:right-3 dark:left-auto md:dark:bottom-2 md:dark:right-3 md:dark:left-auto z-20 h-12 w-[160px] rounded-t-md bg-black border border-white/30 border-b-0 text-white text-sm font-medium flex items-center justify-center hover:bg-neutral-900 hover:border-white/60 transition-colors shadow-lg"
+            className="absolute bottom-2 right-3 dark:bottom-0 dark:right-3 dark:left-auto md:dark:bottom-2 md:dark:right-3 md:dark:left-auto z-20 h-12 w-[160px] rounded-t-md bg-black border border-white/30 border-b-0 text-white text-sm font-medium flex items-center justify-center hover:bg-neutral-900 hover:border-white/60 transition-colors shadow-lg"
             >
               Ask COCO
             </button>
 
-            <motion.div
-              initial={{ opacity: 0, y: 25 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.15, duration: 0.6, ease: "easeOut" }}
-              className={`relative z-10 px-6 max-w-7xl mx-auto text-center ${!isDark ? "pointer-events-none" : ""}`}
-            >
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal leading-[1.15] tracking-tight mb-4 sm:mb-8 dark:mb-2 dark:sm:mb-8">
-                <span className="block text-black dark:text-white">Your competitors have one.</span>
-                <span className="block bg-gradient-to-r from-black via-gray-500 to-gray-400 dark:from-white dark:via-gray-300 dark:to-gray-500 bg-clip-text text-transparent -ml-2">
-                  Do you?
-                </span>
-              </h1>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
+            className={`relative z-10 px-6 max-w-7xl mx-auto text-center ${!isDark ? "pointer-events-none" : ""}`}
+          >
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-normal leading-[1.15] tracking-tight mb-4 sm:mb-8 dark:mb-2 dark:sm:mb-8">
+              <span className="block text-black dark:text-white">Your competitors have one.</span>
+              <span className="block bg-gradient-to-r from-black via-gray-500 to-gray-400 dark:from-white dark:via-gray-300 dark:to-gray-500 bg-clip-text text-transparent -ml-2">
+                Do you?
+              </span>
+            </h1>
 
-              <p className="text-sm sm:text-base md:text-lg text-gray-600 dark:text-gray-300 mb-6 sm:mb-12 dark:mb-3 dark:sm:mb-12 max-w-xl mx-auto">
-                We build custom websites engineered for{" "}
-                <span className="font-semibold text-black dark:text-white">trust</span>,{" "}
-                <span className="font-semibold text-black dark:text-white">speed</span>, and continuous revenue{" "}
-                <span className="font-semibold text-black dark:text-white">growth</span> that turn visitors into paying
-                customers. Stop losing leads to your competitors.
-              </p>
+            <p className="text-sm sm:text-base md:text-lg text-gray-600 dark:text-gray-300 mb-6 sm:mb-12 dark:mb-3 dark:sm:mb-12 max-w-xl mx-auto">
+              We build custom websites engineered for{" "}
+              <span className="font-semibold text-black dark:text-white">trust</span>,{" "}
+              <span className="font-semibold text-black dark:text-white">speed</span>, and continuous revenue{" "}
+              <span className="font-semibold text-black dark:text-white">growth</span> that turn visitors into paying
+              customers. Stop losing leads to your competitors.
+            </p>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                <button className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-black text-white dark:bg-white dark:text-black px-8 py-3.5 rounded-full text-sm font-medium hover:bg-gray-900 dark:hover:bg-gray-200 transition-colors ${!isDark ? "pointer-events-auto" : ""}`}>
-                  Book Free Discovery Call <ArrowRight className="w-4 h-4" />
-                </button>
-              </div>
-            </motion.div>
-          </section>
-        </HeroBg>
-      </div>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <button className={`w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-black text-white dark:bg-white dark:text-black px-8 py-3.5 rounded-full text-sm font-medium hover:bg-gray-900 dark:hover:bg-gray-200 transition-colors ${!isDark ? "pointer-events-auto" : ""}`}>
+                Book Free Discovery Call <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </motion.div>
+        </section>
+      </HeroBg>
 
       <div id="our-process" className="scroll-mt-24" />
       <ProcessSection />
@@ -408,11 +411,15 @@ function IndexInner() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5">
             {TEMPLATES.map((t) => {
+              const Icon = t.Icon;
               return (
-                <button
+                <motion.button
                   key={t.id}
+                  layoutId={`tpl-${t.id}`}
                   onClick={() => setPreview(t.id)}
-                  className="group relative rounded-2xl overflow-hidden aspect-[3/4] text-left text-white border backdrop-blur-sm focus:outline-none focus:ring-2 transition-all duration-300 hover:-translate-y-1.5 will-change-transform"
+                  whileHover={{ y: -6 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 24 }}
+                  className="group relative rounded-2xl overflow-hidden aspect-[3/4] text-left text-white border backdrop-blur-sm focus:outline-none focus:ring-2"
                   style={{
                     background: isDark ? "rgba(20,20,50,0.8)" : "rgba(255,250,243,0.9)",
                     borderColor: isDark ? "#1e1e5a" : "#EAD3B8",
@@ -424,7 +431,7 @@ function IndexInner() {
                 >
                   <div
                     aria-hidden
-                    className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
+                    className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
                     style={{ backgroundImage: `url(${t.image})` }}
                   />
                   <div
@@ -438,7 +445,7 @@ function IndexInner() {
                   />
                   <div
                     aria-hidden
-                    className="absolute top-0 right-0 w-40 h-40 opacity-60 group-hover:opacity-100 transition-opacity duration-300"
+                    className="absolute top-0 right-0 w-40 h-40 opacity-60 group-hover:opacity-100 transition-opacity duration-500"
                     style={{
                       background: isDark
                         ? "linear-gradient(to bottom left, rgba(59,89,152,0.35), transparent)"
@@ -467,7 +474,7 @@ function IndexInner() {
                       </span>
                     </div>
                   </div>
-                </button>
+                </motion.button>
               );
             })}
           </div>
@@ -487,9 +494,9 @@ function IndexInner() {
         {preview && (
           <motion.div
             key={preview}
-            layoutId={`tpl-overlay-${preview}`}
+            layoutId={`tpl-${preview}`}
             className="fixed inset-0 z-[100] bg-white overflow-y-auto"
-            transition={{ type: "spring", stiffness: 220, damping: 26 }}
+            transition={{ type: "spring", stiffness: 200, damping: 28 }}
           >
             <button
               onClick={() => setPreview(null)}

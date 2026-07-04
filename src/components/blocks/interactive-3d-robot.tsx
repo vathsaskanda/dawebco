@@ -1,4 +1,4 @@
-import { Component, Suspense, useEffect, useState, useRef, type ReactNode } from "react";
+import { Component, Suspense, useEffect, useState, type ReactNode } from "react";
 import Spline from "@splinetool/react-spline";
 
 interface InteractiveRobotSplineProps {
@@ -41,27 +41,10 @@ function hasWebGL(): boolean {
 export function InteractiveRobotSpline({ scene, className }: InteractiveRobotSplineProps) {
   const [mounted, setMounted] = useState(false);
   const [webglOk, setWebglOk] = useState(true);
-  const [isInView, setIsInView] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
     setWebglOk(hasWebGL());
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsInView(entry.isIntersecting);
-      },
-      { threshold: 0.05 }
-    );
-
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
-
-    return () => {
-      observer.disconnect();
-    };
   }, []);
 
   const loader = (
@@ -88,20 +71,14 @@ export function InteractiveRobotSpline({ scene, className }: InteractiveRobotSpl
   if (!webglOk) return emptyFallback;
 
   return (
-    <div ref={containerRef} className="w-full h-full min-h-[inherit]">
-      <SplineErrorBoundary fallback={emptyFallback}>
-        <Suspense fallback={loader}>
-          {isInView ? (
-            <Spline
-              scene={scene || DEFAULT_SCENE}
-              className={className}
-              onError={() => setWebglOk(false)}
-            />
-          ) : (
-            emptyFallback
-          )}
-        </Suspense>
-      </SplineErrorBoundary>
-    </div>
+    <SplineErrorBoundary fallback={emptyFallback}>
+      <Suspense fallback={loader}>
+        <Spline
+          scene={scene || DEFAULT_SCENE}
+          className={className}
+          onError={() => setWebglOk(false)}
+        />
+      </Suspense>
+    </SplineErrorBoundary>
   );
 }
